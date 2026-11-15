@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture &amp; OOP Concepts Mapping - Online Shopping System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container" style="max-width: 960px;">
+        <!-- Header -->
+        <div class="text-center mb-5">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 mb-2">University OOPs Using Java Case Study</span>
+            <h1 class="fw-bold text-dark mb-2">System Architecture &amp; OOP Concepts Mapping</h1>
+            <p class="text-muted fs-6">
+                Comprehensive mapping of all mandatory Object-Oriented Programming (OOP) concepts
+                to actual production components within this application.
+            </p>
+        </div>
+
+        <!-- 1. OOP Concepts Mapping Grid -->
+        <div class="row g-4 mb-5">
+            <!-- Classes & Objects -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-box"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">1. Classes &amp; Objects</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Real-world domain models represented as clean Java classes containing state (fields) and behavior (methods).
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><code>Product.java</code>: Models merchandise in catalog</li>
+                            <li><code>Order.java</code>, <code>OrderItem.java</code>: Purchase orders</li>
+                            <li><code>Cart.java</code>, <code>CartItem.java</code>: User shopping sessions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Encapsulation -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-shield-lock"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">2. Encapsulation</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Data hiding through <code>private</code> and <code>protected</code> member fields with access mediated exclusively through public getters, setters, and validation methods.
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><code>Product.reduceStock()</code>: Validates inventory invariants before mutation</li>
+                            <li><code>User.java</code>: Sensitive attributes like hashed passwords are encapsulated</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inheritance -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-diagram-3"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">3. Inheritance</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Code reuse and hierarchical specialization via the <code>extends</code> keyword.
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><code>BaseEntity</code>: Inherited by <code>User</code>, <code>Product</code>, <code>Order</code>, <code>Category</code> for common ID &amp; timestamps</li>
+                            <li><code>Customer extends User</code>, <code>Admin extends User</code></li>
+                            <li><code>PercentageDiscountStrategy extends AbstractDiscountStrategy</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polymorphism -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-shuffle"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">4. Polymorphism</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Both Compile-Time Polymorphism (Method Overloading) and Runtime Polymorphism (Dynamic Method Dispatch &amp; Interfaces).
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><strong>Runtime:</strong> <code>DiscountStrategy.calculateDiscount()</code> implemented differently in <code>PercentageDiscountStrategy</code> and <code>FlatDiscountStrategy</code></li>
+                            <li><strong>Runtime:</strong> <code>PaymentProcessor</code> implemented by <code>CardPaymentProcessor</code>, <code>UPIPaymentProcessor</code>, <code>CashOnDeliveryProcessor</code></li>
+                            <li><strong>Compile-time:</strong> <code>ProductService.searchProducts()</code> overloaded with multi-criteria signatures</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Abstraction -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-layers"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">5. Abstraction</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Hiding implementation details and exposing clean contracts using abstract classes and interfaces.
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li>Interfaces: <code>ProductRepository</code>, <code>UserRepository</code>, <code>OrderRepository</code>, <code>DiscountStrategy</code>, <code>PaymentProcessor</code></li>
+                            <li>Abstract Classes: <code>BaseEntity</code>, <code>AbstractDiscountStrategy</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Constructors & Chaining -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-bricks"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">6. Constructors &amp; Chaining</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Default, parameterized, and overloaded constructors demonstrating constructor chaining using <code>this(...)</code> and <code>super(...)</code>.
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><code>User.java</code>: Multiple constructors chained using <code>this(...)</code></li>
+                            <li><code>Customer.java</code>, <code>Admin.java</code>: Superclass constructor calls using <code>super(...)</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method Overriding -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-arrow-repeat"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">7. Method Overriding</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Redefining superclass or interface methods in subclasses annotated with <code>@Override</code>.
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><code>Customer.getRoleDescription()</code> overrides <code>User.getRoleDescription()</code></li>
+                            <li><code>Product.compareTo()</code> overrides <code>Comparable&lt;Product&gt;</code> for sorting</li>
+                            <li><code>BaseEntity.equals()</code> and <code>hashCode()</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exception Handling -->
+            <div class="col-md-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-exclamation-octagon"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">8. Exception Handling</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Custom application exception hierarchy rooted in <code>CartException</code> with centralized handler.
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><code>InsufficientStockException</code>: Handled gracefully during cart &amp; checkout operations</li>
+                            <li><code>ResourceNotFoundException</code>, <code>AuthenticationException</code>, <code>DatabaseOperationException</code></li>
+                            <li><code>GlobalExceptionHandler</code>: Spring <code>@ControllerAdvice</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Collections Framework -->
+            <div class="col-12">
+                <div class="card-modern p-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="feature-icon-circle" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-collection"></i></div>
+                        <h5 class="fw-bold text-dark mb-0">9. Java Collections &amp; Streams API</h5>
+                    </div>
+                    <p class="text-muted small mb-2">
+                        Extensive use of the Java Collections Framework (<code>List</code>, <code>Set</code>, <code>Map</code>) and Java Streams for declarative processing.
+                    </p>
+                    <div class="small">
+                        <strong>Code Examples:</strong>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li><code>Cart.calculateSubtotal()</code>: <code>items.stream().map(CartItem::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add)</code></li>
+                            <li><code>DiscountCalculator.strategies</code>: <code>Map&lt;String, DiscountStrategy&gt;</code> for O(1) coupon resolution</li>
+                            <li><code>OrderService.paymentProcessors</code>: <code>Map&lt;PaymentMethod, PaymentProcessor&gt;</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Technology Stack Overview -->
+        <div class="card-modern p-5 bg-white mb-5">
+            <h4 class="fw-bold text-dark mb-3"><i class="bi bi-stack text-primary me-2"></i>Technology Stack Details</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle small mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Layer</th>
+                            <th>Technology</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">Language</td>
+                            <td>Java 17 (LTS)</td>
+                            <td>Modern OOP features, Records, Text Blocks, Streams API, Switch expressions</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Framework</td>
+                            <td>Spring Boot 3.2.5</td>
+                            <td>Dependency injection, Spring MVC, Spring JDBC, transaction management</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Database Connectivity</td>
+                            <td>Spring JDBC &amp; Traditional JDBC</td>
+                            <td>JdbcTemplate with RowMapper alongside direct DriverManager PreparedStatement operations</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Database Engine</td>
+                            <td>MySQL 8.0 / MySQL Compatibility</td>
+                            <td>Relational database with schema constraints, foreign keys, and ACID transactions</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Security</td>
+                            <td>BCrypt Password Hashing</td>
+                            <td>Standard cryptographic password hashing; no plain-text passwords stored</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">View Engine</td>
+                            <td>Thymeleaf 3.1</td>
+                            <td>Server-rendered HTML5 templates with clean layout fragments and expression language</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Frontend Design</td>
+                            <td>HTML5, CSS3, Bootstrap 5, SVG</td>
+                            <td>Custom minimalist design system, responsive product grids, local vector illustrations</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: scripts}"></div>
+
+</body>
+</html>

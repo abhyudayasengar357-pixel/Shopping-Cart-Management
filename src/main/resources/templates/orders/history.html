@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Online Shopping System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/navbar :: navbar}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb small mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Order History</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <div>
+                <h2 class="fw-bold text-dark fs-3 mb-1">Customer Order History</h2>
+                <p class="text-muted small mb-0">Track lifecycle status and access printable receipts for past purchases.</p>
+            </div>
+            <a th:href="@{/products}" class="btn btn-sm-modern btn-modern-primary">
+                <i class="bi bi-cart3 me-1"></i> New Order
+            </a>
+        </div>
+
+        <!-- No Orders State -->
+        <div th:if="${orders.empty}" class="card-modern p-5 text-center">
+            <div class="display-6 text-muted mb-2"><i class="bi bi-inbox"></i></div>
+            <h4 class="fw-bold text-dark mb-1">No Orders Found</h4>
+            <p class="text-muted small mb-3">No transactions have been placed under your user account yet.</p>
+            <div>
+                <a th:href="@{/products}" class="btn btn-modern-primary btn-sm-modern py-2 px-3">Browse Catalog</a>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div th:unless="${orders.empty}" class="d-flex flex-column gap-3">
+            <div class="card-modern p-3" th:each="order : ${orders}">
+                <div class="row align-items-center g-3">
+                    <!-- Order Info -->
+                    <div class="col-md-3">
+                        <small class="text-muted d-block text-uppercase font-monospace" style="font-size: 0.7rem;">Tracking ID</small>
+                        <span class="fw-bold text-dark font-monospace" th:text="${order.orderNumber}">ORD-XXXX</span>
+                        <div class="small text-muted font-monospace mt-1" style="font-size: 0.75rem;" th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy, HH:mm')}">Date</div>
+                    </div>
+
+                    <!-- Items Summary -->
+                    <div class="col-md-4">
+                        <small class="text-muted d-block text-uppercase font-monospace" style="font-size: 0.7rem;">Line Items</small>
+                        <span class="fw-semibold text-dark small" th:text="${order.totalItems + ' line item(s)'}">2 items</span>
+                        <div class="text-muted text-truncate" style="font-size: 0.78rem; max-width: 280px;"
+                             th:text="${#strings.listJoin(order.items.![productName], ', ')}">Products list</div>
+                    </div>
+
+                    <!-- Total Amount & Payment -->
+                    <div class="col-md-2">
+                        <small class="text-muted d-block text-uppercase font-monospace" style="font-size: 0.7rem;">Amount</small>
+                        <span class="fw-bold fs-5 text-dark num-mono" th:text="'$' + ${#numbers.formatDecimal(order.finalAmount, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                        <div class="text-muted" style="font-size: 0.75rem;" th:text="${order.paymentMethod.displayName}">Card</div>
+                    </div>
+
+                    <!-- Status & Action Button -->
+                    <div class="col-md-3 d-flex flex-column align-items-md-end justify-content-center gap-2">
+                        <span class="badge-status" th:classappend="'status-' + ${#strings.toLowerCase(order.orderStatus.name())}">
+                            <span class="status-dot"></span>
+                            <span th:text="${order.orderStatus.displayName}">Processing</span>
+                        </span>
+
+                        <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm-modern btn-modern-secondary py-1 px-3">
+                            <i class="bi bi-file-earmark-text me-1"></i> View Receipt
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: scripts}"></div>
+
+</body>
+</html>

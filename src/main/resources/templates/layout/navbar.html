@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+        <!-- Brand Logo -->
+        <a class="navbar-brand brand-badge" th:href="@{/}">
+            <img th:src="@{/images/logo.svg}" alt="Logo" width="28" height="28" class="d-inline-block align-text-top">
+            <span>OnlineCart</span>
+            <span class="badge-sub">OOP-SYS</span>
+        </a>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler border shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links & Actions -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- Left Navigation -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}" th:classappend="${currentUri == '/' ? 'active' : ''}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/products}" th:classappend="${currentUri == '/products' ? 'active' : ''}">Products</a>
+                </li>
+
+                <!-- Categories Dropdown -->
+                <li class="nav-item dropdown" th:if="${globalCategories != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Categories
+                    </a>
+                    <ul class="dropdown-menu border shadow-xs rounded-2 py-1" aria-labelledby="categoriesDropdown">
+                        <li><a class="dropdown-item py-1 px-3 small" th:href="@{/products}">All Categories</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li th:each="cat : ${globalCategories}">
+                            <a class="dropdown-item py-1 px-3 small" th:href="@{/products(categoryId=${cat.id})}" th:text="${cat.name}">Category</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/about}">Architecture</a>
+                </li>
+
+                <!-- Admin Link (Only for logged-in Admin) -->
+                <li class="nav-item" th:if="${currentUser != null and currentUser.admin}">
+                    <a class="nav-link text-dark fw-bold" th:href="@{/admin/dashboard}">
+                        <span class="badge bg-dark text-white me-1">Admin</span> Dashboard
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search Form -->
+            <form class="d-flex me-lg-3 my-2 my-lg-0" th:action="@{/products}" method="get">
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-modern border-end-0" type="search" name="keyword"
+                           placeholder="Search catalog..." aria-label="Search" th:value="${keyword}">
+                    <button class="btn btn-outline-secondary border-start-0 border-color bg-white" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Right Actions (Cart & User) -->
+            <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+                <!-- Shopping Cart Button -->
+                <a th:href="@{/cart}" class="cart-button">
+                    <i class="bi bi-bag fs-6"></i>
+                    <span class="ms-1 d-none d-md-inline">Cart</span>
+                    <span class="cart-badge" th:text="${cartCount != null ? cartCount : 0}">0</span>
+                </a>
+
+                <!-- User Dropdown (Logged In) -->
+                <div class="dropdown" th:if="${currentUser != null}">
+                    <button class="btn btn-modern-secondary dropdown-toggle btn-sm-modern" type="button"
+                            id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person me-1"></i>
+                        <span th:text="${currentUser.fullName}">User</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border shadow-xs rounded-2 py-1 mt-1" aria-labelledby="userDropdown">
+                        <li class="px-3 py-2 border-bottom">
+                            <div class="fw-bold small" th:text="${currentUser.fullName}">Full Name</div>
+                            <small class="text-muted font-monospace" style="font-size: 0.72rem;" th:text="${currentUser.roleDescription}">Customer</small>
+                        </li>
+                        <li><a class="dropdown-item py-1 px-3 small" th:href="@{/profile}"><i class="bi bi-person me-2"></i>My Profile</a></li>
+                        <li><a class="dropdown-item py-1 px-3 small" th:href="@{/orders}"><i class="bi bi-bag-check me-2"></i>My Orders</a></li>
+
+                        <li th:if="${currentUser.admin}"><hr class="dropdown-divider my-1"></li>
+                        <li th:if="${currentUser.admin}"><a class="dropdown-item py-1 px-3 small text-dark fw-semibold" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</a></li>
+                        <li th:if="${currentUser.admin}"><a class="dropdown-item py-1 px-3 small text-dark fw-semibold" th:href="@{/admin/jdbc-comparison}"><i class="bi bi-cpu me-2"></i>JDBC Benchmark</a></li>
+
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-1 px-3 small text-danger" th:href="@{/logout}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+
+                <!-- Guest Actions (Not Logged In) -->
+                <div class="d-flex gap-2" th:if="${currentUser == null}">
+                    <a th:href="@{/login}" class="btn btn-modern-secondary btn-sm-modern">Sign In</a>
+                    <a th:href="@{/register}" class="btn btn-modern-primary btn-sm-modern">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Global Toast / Alerts -->
+<div class="container mt-3" th:if="${successMessage != null or errorMessage != null}">
+    <div th:if="${successMessage != null}" class="alert alert-success alert-dismissible fade show rounded-2 shadow-xs border d-flex align-items-center gap-2 py-2 px-3 small" role="alert">
+        <i class="bi bi-check-circle-fill text-success"></i>
+        <div th:text="${successMessage}">Success message</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage != null}" class="alert alert-danger alert-dismissible fade show rounded-2 shadow-xs border d-flex align-items-center gap-2 py-2 px-3 small" role="alert">
+        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+        <div th:text="${errorMessage}">Error message</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,731 @@
+/* ====================================================================
+   Online Shopping Cart & Order Management System
+   Precision Modern E-Commerce Design System (Sharp & Production-Grade)
+   ==================================================================== */
+
+:root {
+    /* Neutrals (Zinc / Slate Spectrum) */
+    --black: #09090b;
+    --dark: #18181b;
+    --dark-muted: #27272a;
+    --text-main: #09090b;
+    --text-muted: #71717a;
+    --text-subtle: #a1a1aa;
+
+    --bg-page: #fafafa;
+    --bg-surface: #ffffff;
+    --bg-subtle: #f4f4f5;
+    --bg-muted: #e4e4e7;
+
+    --border-color: #e4e4e7;
+    --border-subtle: #f4f4f5;
+    --border-strong: #d4d4d8;
+
+    /* Accents */
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-subtle: #eff6ff;
+    --accent-border: #bfdbfe;
+
+    --success: #15803d;
+    --success-bg: #f0fdf4;
+    --success-border: #bbf7d0;
+
+    --warning: #b45309;
+    --warning-bg: #fffbeb;
+    --warning-border: #fde68a;
+
+    --danger: #b91c1c;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+
+    /* Sharp Radii (Engineered Geometry, No Bubbly Shapes) */
+    --radius-xs: 3px;
+    --radius-sm: 5px;
+    --radius-md: 7px;
+    --radius-lg: 9px;
+    --radius-pill: 9999px;
+
+    /* Crisp Precision Shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
+    --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Typographic Precision */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+main {
+    flex: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--black);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+}
+
+.num-mono, .product-price, .kpi-value {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+a:hover {
+    color: var(--accent-hover);
+}
+
+/* ====================================================================
+   Navigation Bar (Razor-Sharp Stripe/Linear Aesthetic)
+   ==================================================================== */
+.navbar-custom {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    box-shadow: var(--shadow-xs);
+}
+
+.brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--black);
+    letter-spacing: -0.03em;
+}
+
+.brand-badge img {
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border-color);
+}
+
+.brand-badge .badge-sub {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.15rem 0.4rem;
+    border-radius: var(--radius-xs);
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    margin-left: 0.25rem;
+}
+
+.nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dark-muted) !important;
+    padding: 0.45rem 0.75rem !important;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--black) !important;
+    background-color: var(--bg-subtle);
+}
+
+.cart-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--black);
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition-fast);
+}
+
+.cart-button:hover {
+    background: var(--bg-subtle);
+    border-color: var(--border-strong);
+    color: var(--black);
+}
+
+.cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--black);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: var(--radius-xs);
+}
+
+/* ====================================================================
+   Buttons (Tactile, Crisp, Dark Obsidian & Sharp Outline)
+   ==================================================================== */
+.btn-modern-primary {
+    background-color: var(--black);
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.55rem 1.15rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--black);
+    box-shadow: var(--shadow-inset), var(--shadow-xs);
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.btn-modern-primary:hover {
+    background-color: #27272a;
+    border-color: #27272a;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+.btn-modern-primary:active {
+    transform: translateY(0);
+}
+
+.btn-modern-primary:disabled {
+    background-color: var(--border-strong);
+    border-color: var(--border-strong);
+    color: var(--text-muted) !important;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-modern-secondary {
+    background-color: #ffffff;
+    color: var(--dark) !important;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.55rem 1.15rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-modern-secondary:hover {
+    background-color: var(--bg-subtle);
+    border-color: var(--border-strong);
+    color: var(--black) !important;
+}
+
+.btn-sm-modern {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-sm);
+}
+
+/* ====================================================================
+   Cards & Surfaces (Sharp 1px Borders, Micro-Elevation)
+   ==================================================================== */
+.card-modern {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.card-modern:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-sm);
+}
+
+.product-image-container {
+    background: #fbfbfc;
+    height: 195px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.product-img {
+    max-height: 150px;
+    max-width: 100%;
+    object-fit: contain;
+    transition: var(--transition);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.04));
+}
+
+.card-modern:hover .product-img {
+    transform: scale(1.03);
+}
+
+.product-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-xs);
+    background: #ffffff;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xs);
+}
+
+.product-price {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--black);
+}
+
+/* Category Cards */
+.category-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    text-align: center;
+    transition: var(--transition-fast);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.category-card:hover {
+    border-color: var(--black);
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+.category-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-subtle);
+    color: var(--black);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    border: 1px solid var(--border-color);
+}
+
+/* ====================================================================
+   Forms & Inputs (Sharp, Clean Contrast)
+   ==================================================================== */
+.form-control-modern, .form-select-modern {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.85rem;
+    font-size: 0.875rem;
+    color: var(--text-main);
+    background-color: #ffffff;
+    transition: var(--transition-fast);
+}
+
+.form-control-modern:focus, .form-select-modern:focus {
+    border-color: var(--black);
+    box-shadow: 0 0 0 1px var(--black);
+    outline: none;
+}
+
+.form-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--dark-muted);
+    margin-bottom: 0.35rem;
+}
+
+/* ====================================================================
+   Hero Section & Clean Marketing (No AI Slop)
+   ==================================================================== */
+.hero-section {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 3.5rem 0 3rem;
+}
+
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.25rem 0.65rem;
+    background: var(--bg-subtle);
+    color: var(--dark);
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.25rem;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+    max-width: 580px;
+}
+
+/* Features Strip */
+.features-strip {
+    padding: 1.75rem 0;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feature-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.5rem;
+}
+
+.feature-icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    color: var(--black);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* ====================================================================
+   Badges & Status Indicators
+   ==================================================================== */
+.badge-status {
+    padding: 0.25rem 0.6rem;
+    font-weight: 600;
+    font-size: 0.72rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-radius: var(--radius-xs);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid transparent;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.badge-status.status-pending {
+    background: var(--warning-bg);
+    color: var(--warning);
+    border-color: var(--warning-border);
+}
+.badge-status.status-pending .status-dot { background: var(--warning); }
+
+.badge-status.status-processing {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+.badge-status.status-processing .status-dot { background: #2563eb; }
+
+.badge-status.status-shipped {
+    background: #f5f3ff;
+    color: #6d28d9;
+    border-color: #ddd6fe;
+}
+.badge-status.status-shipped .status-dot { background: #7c3aed; }
+
+.badge-status.status-delivered {
+    background: var(--success-bg);
+    color: var(--success);
+    border-color: var(--success-border);
+}
+.badge-status.status-delivered .status-dot { background: var(--success); }
+
+.badge-status.status-cancelled {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border-color: var(--danger-border);
+}
+.badge-status.status-cancelled .status-dot { background: var(--danger); }
+
+/* Stock Badges */
+.badge-in-stock {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid var(--success-border);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-xs);
+}
+
+.badge-low-stock {
+    background: var(--warning-bg);
+    color: var(--warning);
+    border: 1px solid var(--warning-border);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-xs);
+}
+
+.badge-out-of-stock {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid var(--danger-border);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-xs);
+}
+
+/* ====================================================================
+   Tables (Crisp Row Dividers, Mono IDs & Numbers)
+   ==================================================================== */
+.table-modern {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-modern thead th {
+    background: var(--bg-subtle);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    border-top: none;
+}
+
+.table-modern tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.875rem;
+}
+
+.table-modern tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-modern tbody tr:hover td {
+    background-color: #fbfbfc;
+}
+
+/* ====================================================================
+   Admin Dashboard & KPI Cards
+   ==================================================================== */
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow-xs);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: var(--transition-fast);
+}
+
+.kpi-card:hover {
+    border-color: var(--border-strong);
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.kpi-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--black);
+    line-height: 1.1;
+}
+
+.kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    background: var(--bg-subtle);
+    color: var(--black);
+    border: 1px solid var(--border-color);
+}
+
+/* ====================================================================
+   Code Boxes & Architectural Benchmarks
+   ==================================================================== */
+.code-box {
+    background: #09090b;
+    color: #f4f4f5;
+    border: 1px solid #27272a;
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    overflow-x: auto;
+}
+
+/* Interactive Coupon Tag */
+.coupon-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #ffffff;
+    border: 1px dashed var(--border-strong);
+    color: var(--black);
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.coupon-tag:hover {
+    background: var(--bg-subtle);
+    border-color: var(--black);
+}
+
+/* ====================================================================
+   Auth Cards & Quick Fills
+   ==================================================================== */
+.auth-card {
+    max-width: 440px;
+    margin: 3rem auto;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 2.25rem;
+}
+
+.demo-credentials-box {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    margin-top: 1.25rem;
+    font-size: 0.8125rem;
+}
+
+.quick-fill-btn {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-xs);
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-weight: 600;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    transition: var(--transition-fast);
+}
+
+.quick-fill-btn:hover {
+    background: var(--black);
+    border-color: var(--black);
+    color: #ffffff;
+}
+
+/* ====================================================================
+   Footer (Clean, Monochromatic)
+   ==================================================================== */
+.footer-custom {
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    padding: 2.5rem 0 1.5rem;
+    margin-top: 4rem;
+}
+
+.footer-link {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    transition: var(--transition-fast);
+    display: block;
+    margin-bottom: 0.45rem;
+}
+
+.footer-link:hover {
+    color: var(--black);
+    transform: translateX(2px);
+}

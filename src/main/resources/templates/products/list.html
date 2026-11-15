@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Catalog - Online Shopping Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/navbar :: navbar}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <!-- Breadcrumb & Header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb small mb-2">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Catalog</li>
+                    <li class="breadcrumb-item active" th:if="${currentCategory != null}" th:text="${currentCategory.name}">Category</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 border-bottom">
+                <div>
+                    <h2 class="fw-bold text-dark mb-1 fs-3" th:text="${currentCategory != null ? currentCategory.name : 'Hardware &amp; Software Catalog'}">Hardware Catalog</h2>
+                    <p class="text-muted small mb-0 font-monospace" th:text="'Showing ' + ${totalFound} + ' indexed products'">Showing products</p>
+                </div>
+
+                <!-- Sorting Dropdown Form -->
+                <form id="sortForm" th:action="@{/products}" method="get" class="d-flex align-items-center gap-2">
+                    <input type="hidden" name="keyword" th:value="${keyword}">
+                    <input type="hidden" name="categoryId" th:value="${selectedCategoryId}">
+                    <input type="hidden" name="minPrice" th:value="${minPrice}">
+                    <input type="hidden" name="maxPrice" th:value="${maxPrice}">
+
+                    <label class="small text-muted text-nowrap fw-semibold">Sort:</label>
+                    <select name="sortBy" class="form-select form-select-sm form-select-modern" style="width: 175px;" onchange="this.form.submit()">
+                        <option value="featured" th:selected="${sortBy == 'featured'}">Featured</option>
+                        <option value="price_asc" th:selected="${sortBy == 'price_asc'}">Price: Low to High</option>
+                        <option value="price_desc" th:selected="${sortBy == 'price_desc'}">Price: High to Low</option>
+                        <option value="name_asc" th:selected="${sortBy == 'name_asc'}">Name: A to Z</option>
+                        <option value="name_desc" th:selected="${sortBy == 'name_desc'}">Name: Z to A</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Sidebar Filter -->
+            <div class="col-lg-3">
+                <div class="card-modern p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                        <span class="fw-bold text-dark small text-uppercase" style="letter-spacing: 0.05em;">Filters</span>
+                        <a th:href="@{/products}" class="text-muted small text-decoration-none">Reset</a>
+                    </div>
+
+                    <form th:action="@{/products}" method="get">
+                        <input type="hidden" name="sortBy" th:value="${sortBy}">
+
+                        <!-- Keyword Search -->
+                        <div class="mb-3">
+                            <label class="form-label">Search Query</label>
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="keyword" class="form-control form-control-modern"
+                                       placeholder="SKU, title, or keywords..." th:value="${keyword}">
+                                <button class="btn btn-modern-primary btn-sm-modern px-3" type="submit"><i class="bi bi-search"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="mb-3">
+                            <label class="form-label">Categories</label>
+                            <div class="list-group list-group-flush small">
+                                <a th:href="@{/products(keyword=${keyword}, sortBy=${sortBy}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0 rounded-1"
+                                   th:classappend="${selectedCategoryId == null ? 'bg-light text-dark fw-bold' : 'text-muted'}">
+                                    <span>All Categories</span>
+                                    <span class="badge bg-white text-dark border font-monospace" th:text="${totalFound}">0</span>
+                                </a>
+
+                                <a th:each="cat : ${categories}"
+                                   th:href="@{/products(categoryId=${cat.id}, keyword=${keyword}, sortBy=${sortBy}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 px-1 border-0 rounded-1"
+                                   th:classappend="${selectedCategoryId == cat.id ? 'bg-light text-dark fw-bold' : 'text-muted'}">
+                                    <span th:text="${cat.name}">Category Name</span>
+                                    <span class="badge bg-white text-dark border font-monospace" th:text="${cat.productCount}">0</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="mb-3">
+                            <label class="form-label">Price Range ($)</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="number" step="0.01" name="minPrice" class="form-control form-control-sm form-control-modern num-mono"
+                                           placeholder="Min $" th:value="${minPrice}">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" step="0.01" name="maxPrice" class="form-control form-control-sm form-control-modern num-mono"
+                                           placeholder="Max $" th:value="${maxPrice}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 pt-2 border-top">
+                            <button type="submit" class="btn btn-modern-primary btn-sm-modern py-2">Apply Filters</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Product Grid -->
+            <div class="col-lg-9">
+                <!-- If No Products Found -->
+                <div th:if="${products.empty}" class="card-modern p-5 text-center">
+                    <div class="display-6 text-muted mb-2"><i class="bi bi-inbox"></i></div>
+                    <h5 class="fw-bold text-dark">No Products Matched Criteria</h5>
+                    <p class="text-muted small mb-3">Modify your keyword query or adjust price constraints to view available inventory.</p>
+                    <div>
+                        <a th:href="@{/products}" class="btn btn-modern-primary btn-sm-modern py-2 px-3">Clear All Filters</a>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="row g-3" th:unless="${products.empty}">
+                    <div class="col-12 col-sm-6 col-md-4" th:each="product : ${products}">
+                        <div class="card-modern h-100 d-flex flex-column">
+                            <div class="product-image-container">
+                                <span class="product-tag" th:text="${product.categoryName}">Category</span>
+                                <img th:src="@{${product.imageUrl}}" th:alt="${product.name}" class="product-img">
+                            </div>
+
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="badge" th:classappend="${product.stockStatusBadge}" th:text="${product.stockStatusLabel}">In Stock</span>
+                                    <span class="font-monospace text-muted" style="font-size: 0.7rem;" th:text="${'Stock: ' + product.stockQuantity}">10</span>
+                                </div>
+
+                                <h6 class="fw-bold text-dark mb-1">
+                                    <a th:href="@{/products/{id}(id=${product.id})}" class="text-dark text-decoration-none" th:text="${product.name}">Product Name</a>
+                                </h6>
+
+                                <p class="text-muted small mb-3 flex-grow-1 line-clamp-2" style="font-size: 0.8125rem;" th:text="${product.description}">Short description</p>
+
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-auto">
+                                    <span class="product-price num-mono" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+
+                                    <form th:action="@{/cart/add}" method="post" class="d-inline">
+                                        <input type="hidden" name="productId" th:value="${product.id}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-sm-modern btn-modern-primary"
+                                                th:disabled="${!product.available}">
+                                            <i class="bi bi-cart-plus me-1"></i> Add
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: scripts}"></div>
+
+</body>
+</html>

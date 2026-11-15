@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traditional JDBC vs Spring JDBC - Architectural Benchmark</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Breadcrumb & Top Bar -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb small">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                <li class="breadcrumb-item active" aria-current="page">JDBC Benchmark</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <span class="badge bg-primary fw-bold mb-1">University Case Study Requirement #6</span>
+                <h2 class="fw-bold text-dark mb-1">Traditional JDBC vs Spring JDBC</h2>
+                <p class="text-muted small mb-0">Live empirical performance metrics, architecture evaluation, and actual codebase comparison.</p>
+            </div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Admin Dashboard
+            </a>
+        </div>
+
+        <!-- 1. Live Benchmark Testing Box -->
+        <div class="card-modern p-4 mb-5 border-primary shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-stopwatch text-primary me-2"></i>Live Query Benchmark Execution</h5>
+                <span class="badge bg-success-subtle text-success">Active Live Test</span>
+            </div>
+
+            <form th:action="@{/admin/jdbc-comparison}" method="get" class="row g-3 align-items-end mb-4">
+                <div class="col-md-8">
+                    <label class="form-label small fw-semibold text-dark">Filter Keyword (optional)</label>
+                    <input type="text" name="keyword" class="form-control form-control-modern"
+                           placeholder="Type a product keyword e.g. Book, Laptop, Shoes, or leave empty for all"
+                           th:value="${keyword}">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-modern-primary w-100 py-2">
+                        <i class="bi bi-play-circle me-1"></i> Run Benchmark Query
+                    </button>
+                </div>
+            </form>
+
+            <!-- Benchmark Results Comparison -->
+            <div class="row g-4 text-center">
+                <div class="col-md-6">
+                    <div class="p-4 bg-light rounded-4 border">
+                        <span class="badge bg-primary px-3 py-1 mb-2">Spring JDBC (JdbcTemplate)</span>
+                        <div class="display-6 fw-bold text-dark mb-1" th:text="${springDurationMs + ' ms'}">0.000 ms</div>
+                        <div class="small text-muted" th:text="'Retrieved ' + ${springResultsCount} + ' products via HikariCP + JdbcTemplate'">Results</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-4 bg-light rounded-4 border">
+                        <span class="badge bg-secondary px-3 py-1 mb-2">Traditional JDBC (DriverManager)</span>
+                        <div class="display-6 fw-bold text-dark mb-1" th:text="${traditionalDurationMs + ' ms'}">0.000 ms</div>
+                        <div class="small text-muted" th:text="'Retrieved ' + ${traditionalResultsCount} + ' products via DriverManager.getConnection()'">Results</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Actual Code Comparison -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="fw-bold text-dark mb-0">1. Traditional JDBC Implementation</h5>
+                        <span class="badge bg-secondary">Manual Boilerplate</span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        From <code>TraditionalJdbcProductRepository.java</code>: Requires manual Connection opening, PreparedStatement binding, ResultSet cursor iteration, and checked SQLException handling.
+                    </p>
+
+                    <div class="code-box">
+<pre style="margin: 0; color: #f8fafc;">// Traditional JDBC Method (Actual Project Code)
+public Optional&lt;Product&gt; findById(Long id) {
+    String sql = "SELECT * FROM products WHERE id = ?";
+    // 1. Manually open connection via DriverManager
+    try (Connection conn = DriverManager.getConnection(url, user, pass);
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        // 2. Set parameter indices manually
+        ps.setLong(1, id);
+
+        // 3. Execute query and obtain ResultSet
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                // 4. Manually extract and map every column
+                Product p = new Product();
+                p.setId(rs.getLong("id"));
+                p.setName(rs.getString("name"));
+                p.setPrice(rs.getBigDecimal("price"));
+                p.setStockQuantity(rs.getInt("stock_quantity"));
+                return Optional.of(p);
+            }
+        }
+        return Optional.empty();
+    } catch (SQLException e) {
+        // 5. Must handle checked SQLException manually!
+        throw new DatabaseOperationException("JDBC error", sql, e);
+    }
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card-modern p-4 h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="fw-bold text-dark mb-0">2. Spring JDBC (JdbcTemplate)</h5>
+                        <span class="badge bg-primary">Modern Spring Framework</span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        From <code>SpringJdbcProductRepository.java</code>: Uses Spring's JdbcTemplate, reusable RowMapper, pooled HikariCP DataSource, and automatic unchecked exception translation.
+                    </p>
+
+                    <div class="code-box">
+<pre style="margin: 0; color: #f8fafc;">// Spring JDBC Method (Actual Project Code)
+public Optional&lt;Product&gt; findById(Long id) {
+    String sql = "SELECT * FROM products WHERE id = ?";
+    try {
+        // 1. Connection acquired automatically from pool
+        // 2. PreparedStatement prepared safely
+        // 3. RowMapper&lt;Product&gt; maps rows declaratively
+        // 4. Connection closed automatically back to pool
+        Product p = jdbcTemplate.queryForObject(
+            sql,
+            productRowMapper,
+            id
+        );
+        return Optional.ofNullable(p);
+    } catch (EmptyResultDataAccessException e) {
+        // 5. Unchecked Spring DataAccessException hierarchy
+        return Optional.empty();
+    }
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Academic Comparison Matrix -->
+        <div class="card-modern p-4 mb-5">
+            <h5 class="fw-bold text-dark mb-4"><i class="bi bi-table text-primary me-2"></i>Comprehensive Architectural Comparison Matrix</h5>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light small text-dark">
+                        <tr>
+                            <th style="width: 20%;">Architectural Aspect</th>
+                            <th style="width: 40%;">Traditional JDBC</th>
+                            <th style="width: 40%;">Spring JDBC (JdbcTemplate)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="small">
+                        <tr>
+                            <td class="fw-bold text-dark">Connection Management</td>
+                            <td>Manual creation via <code>DriverManager.getConnection()</code>. Opens a new physical TCP connection per call if unpooled.</td>
+                            <td>Automatic connection pooling managed via <code>HikariDataSource</code>. Connections are reused efficiently.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">Boilerplate Code</td>
+                            <td>High. Requires opening, parameter setting, cursor iteration, and manual resource closing.</td>
+                            <td>Minimal. <code>JdbcTemplate</code> encapsulates repetitive boilerplate in template callback methods.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">Exception Handling</td>
+                            <td>Throws checked <code>java.sql.SQLException</code>. Requires explicit try-catch or method signature decoration.</td>
+                            <td>Translates SQLExceptions into rich, unchecked <code>org.springframework.dao.DataAccessException</code> hierarchy.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">Object Mapping</td>
+                            <td>Manual column reading using <code>rs.getString()</code>, <code>rs.getBigDecimal()</code> in loops.</td>
+                            <td>Declarative mapping using reusable <code>RowMapper&lt;T&gt;</code> functional interfaces.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">Transaction Management</td>
+                            <td>Manual control: <code>conn.setAutoCommit(false)</code>, <code>conn.commit()</code>, and <code>conn.rollback()</code>.</td>
+                            <td>Declarative transaction management via Spring's <code>@Transactional</code> annotation.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">SQL Injection Defense</td>
+                            <td>Supported via <code>PreparedStatement</code> placeholders (<code>?</code>), but developer must be diligent.</td>
+                            <td>Built into <code>JdbcTemplate</code> methods via varargs parameter binding.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. Viva Voce Cheat-Sheet & Questions -->
+        <div class="card-modern p-4 bg-light border">
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-question-circle text-primary me-2"></i>University Viva Preparation: Frequently Asked Questions</h5>
+
+            <div class="accordion accordion-flush" id="vivaAccordion">
+                <div class="accordion-item bg-transparent">
+                    <h2 class="accordion-header" id="faq1">
+                        <button class="accordion-button collapsed bg-transparent fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                            Q1: What are the primary problems with Traditional JDBC that Spring JDBC solves?
+                        </button>
+                    </h2>
+                    <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                        <div class="accordion-body small text-muted">
+                            Traditional JDBC requires extensive repetitive boilerplate: opening connections, managing prepared statements, manually looping over result sets, and closing resources in finally blocks. Additionally, traditional JDBC throws checked <code>SQLException</code>, coupling persistence details with business layers. Spring JDBC uses the Template Method pattern (<code>JdbcTemplate</code>) to eliminate boilerplate, reuse connections from HikariCP, and translate exceptions into unchecked <code>DataAccessException</code>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent">
+                    <h2 class="accordion-header" id="faq2">
+                        <button class="accordion-button collapsed bg-transparent fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                            Q2: How does this project demonstrate Traditional JDBC transactions?
+                        </button>
+                    </h2>
+                    <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                        <div class="accordion-body small text-muted">
+                            In <code>TraditionalJdbcAuditRepository.java</code>, we demonstrate manual transaction control: we set <code>conn.setAutoCommit(false)</code>, execute the SQL statement with a prepared statement, invoke <code>conn.commit()</code> upon success, and in the catch block explicitly call <code>conn.rollback()</code> before resetting auto-commit.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent">
+                    <h2 class="accordion-header" id="faq3">
+                        <button class="accordion-button collapsed bg-transparent fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                            Q3: How is atomic consistency maintained during Checkout?
+                        </button>
+                    </h2>
+                    <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
+                        <div class="accordion-body small text-muted">
+                            In <code>OrderService.placeOrder()</code>, the method is annotated with <code>@Transactional(rollbackFor = Exception.class)</code>. Within a single transaction boundary: the cart items are verified, simulated payment is authorized, order and order items are inserted, and product inventory quantities are decremented. If any step fails (e.g. insufficient stock or payment failure), the entire transaction rolls back automatically, preventing orphaned orders or incorrect stock levels.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: scripts}"></div>
+
+</body>
+</html>

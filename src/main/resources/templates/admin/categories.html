@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Categories - Admin Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/navbar :: navbar}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <!-- Breadcrumb & Header -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb small mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Admin</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Categories</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom">
+            <div>
+                <h2 class="fw-bold text-dark fs-3 mb-1">Product Category Taxonomy</h2>
+                <p class="text-muted small mb-0">Define catalog hierarchies, assign icon designations, and track product distribution.</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left: Add New Category Form -->
+            <div class="col-lg-4">
+                <div class="card-modern p-3">
+                    <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom text-uppercase small" style="letter-spacing: 0.05em;">New Classification</h6>
+
+                    <form th:action="@{/admin/categories/save}" th:object="${category}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Category Name <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control form-control-modern"
+                                   placeholder="e.g. Storage &amp; Drives" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Icon Glyphs</label>
+                            <select th:field="*{icon}" class="form-select form-select-modern">
+                                <option value="bi-laptop">Laptop (bi-laptop)</option>
+                                <option value="bi-bag">Bag (bi-bag)</option>
+                                <option value="bi-book">Book (bi-book)</option>
+                                <option value="bi-house-door">Home (bi-house-door)</option>
+                                <option value="bi-trophy">Sports (bi-trophy)</option>
+                                <option value="bi-controller">Gaming (bi-controller)</option>
+                                <option value="bi-camera">Camera (bi-camera)</option>
+                                <option value="bi-tag">General Tag (bi-tag)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea th:field="*{description}" rows="3" class="form-control form-control-modern"
+                                      placeholder="Brief technical summary of products in this category"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-modern-primary w-100 py-2 btn-sm-modern">
+                            <i class="bi bi-plus-lg me-1"></i> Register Category
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right: Categories List Table -->
+            <div class="col-lg-8">
+                <div class="card-modern p-0">
+                    <div class="p-3 border-bottom bg-light">
+                        <h6 class="fw-bold text-dark mb-0 text-uppercase small" style="letter-spacing: 0.05em;">Configured Taxonomies</h6>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">#</th>
+                                    <th>Category Taxonomy</th>
+                                    <th>Scope Description</th>
+                                    <th>Associated SKUs</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="cat : ${categories}">
+                                    <td class="text-muted font-monospace small" th:text="${cat.id}">1</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="category-icon p-0" style="width: 28px; height: 28px; font-size: 0.9rem;">
+                                                <i class="bi" th:classappend="${cat.icon != null ? cat.icon : 'bi-tag'}"></i>
+                                            </div>
+                                            <span class="fw-semibold text-dark small" th:text="${cat.name}">Name</span>
+                                        </div>
+                                    </td>
+                                    <td class="small text-muted" th:text="${cat.description}">Description</td>
+                                    <td>
+                                        <span class="badge bg-white text-dark border font-monospace" th:text="${cat.productCount + ' SKUs'}">0 items</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <form th:action="@{/admin/categories/delete/{id}(id=${cat.id})}" method="post" class="d-inline confirm-delete" data-entity="category">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger p-1" title="Delete category"
+                                                    th:disabled="${cat.productCount > 0}">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: scripts}"></div>
+
+</body>
+</html>
